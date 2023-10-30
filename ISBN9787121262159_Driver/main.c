@@ -57,6 +57,7 @@ NTSTATUS ccpAttachDevice(
     if (oldobj->Flags & DO_DIRECT_IO)
         (*fltobj)->Flags |= DO_DIRECT_IO;
     // 我这里没有 Characteristics 成员，好像也没事吧，试试
+    // 因为太老了 https://www.nirsoft.net/kernel_struct/vista/DEVICE_OBJECT.html 这里有
     //if (oldobj->Characteristics & FILE_DEVICE_SECURE_OPEN) 
         //(*fltobj)->Characteristics |= FILE_DEVICE_SECURE_OPEN;
     (*fltobj)->Flags |= DO_POWER_PAGABLE;
@@ -89,13 +90,16 @@ NTSTATUS ccpDispatch(PDEVICE_OBJECT device, PIRP irp) {
 	NTSTATUS status;
 	ULONG i, j;
 	for (i = 0; i < CCP_MAX_COM_ID; i++) {
+        DbgPrint("(i = 0; i < CCP_MAX_COM_ID; i++\r\n");
         if (s_fltobj[i] == device) {
+            DbgPrint("s_fltobj[i] == device\r\n");
             if (irpsp->MajorFunction == IRP_MJ_POWER) {
                 PoStartNextPowerIrp(irp);
                 IoSkipCurrentIrpStackLocation(irp);
                 return PoCallDriver(s_nextobj[i], irp);
             }
             if (irpsp->MajorFunction == IRP_MJ_WRITE) {
+                DbgPrint("IRP_MJ_WRITE\r\n");
                 ULONG len = irpsp->Parameters.Write.Length;
                 PUCHAR buf = NULL;
                 if (irp->MdlAddress != NULL) {
@@ -144,6 +148,7 @@ void ccpUnload(PDRIVER_OBJECT drv)
 NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path){
     size_t i;
     for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) {
+        DbgPrint("DriverEntry: %d\r\n", i);
         driver->MajorFunction[i] = ccpDispatch;
     }
     driver->DriverUnload = ccpUnload;
