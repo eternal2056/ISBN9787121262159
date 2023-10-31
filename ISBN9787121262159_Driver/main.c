@@ -37,9 +37,9 @@ PDEVICE_OBJECT ccpOpenCom(ULONG id, NTSTATUS* status) {
 
 NTSTATUS ccpAttachDevice(
     PDRIVER_OBJECT driver,
-    PDRIVER_OBJECT oldobj,
-    PDRIVER_OBJECT* fltobj,
-    PDRIVER_OBJECT* next)
+    PDEVICE_OBJECT oldobj,
+    PDEVICE_OBJECT* fltobj,
+    PDEVICE_OBJECT* next)
 {
     NTSTATUS status;
     PDEVICE_OBJECT topdev = NULL;
@@ -63,7 +63,7 @@ NTSTATUS ccpAttachDevice(
     (*fltobj)->Flags |= DO_POWER_PAGABLE;
     topdev = IoAttachDeviceToDeviceStack(*fltobj, oldobj);
     if (topdev == NULL) {
-        IoDeleteController(*fltobj);
+        IoDeleteDevice(*fltobj);
         *fltobj = NULL;
         status = STATUS_UNSUCCESSFUL;
         return status;
@@ -148,7 +148,7 @@ void ccpUnload(PDRIVER_OBJECT drv)
 NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path){
     size_t i;
     for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) {
-        DbgPrint("DriverEntry: %d\r\n", i);
+        DbgPrint("DriverEntry: ох\r\n");
         driver->MajorFunction[i] = ccpDispatch;
     }
     driver->DriverUnload = ccpUnload;
