@@ -148,7 +148,7 @@ void ccpUnload(PDRIVER_OBJECT drv)
 NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path){
     size_t i;
     for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) {
-        DbgPrint("DriverEntry: ох\r\n");
+        DbgPrint("DriverEntry: %d\r\n", (int)i);
         driver->MajorFunction[i] = ccpDispatch;
     }
     driver->DriverUnload = ccpUnload;
