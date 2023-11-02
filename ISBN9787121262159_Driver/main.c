@@ -9,6 +9,7 @@ static PDEVICE_OBJECT s_nextobj[CCP_MAX_COM_ID] = { 0 };
 
 UNICODE_STRING com_name = RTL_CONSTANT_STRING(L"\\Device\\Serial0");
 
+// 这个函数是获取某设备的设备对象
 PDEVICE_OBJECT ccpOpenCom(ULONG id, NTSTATUS* status) {
     UNICODE_STRING name_str;   // 声明一个UNICODE_STRING结构用于保存设备名称
     static WCHAR name[32] = { 0 };   // 创建一个32字符的WCHAR数组并初始化为0
@@ -35,6 +36,8 @@ PDEVICE_OBJECT ccpOpenCom(ULONG id, NTSTATUS* status) {
     return devobj;   // 返回设备对象指针
 }
 
+// 这个函数：我们的驱动程序创建了一个设备对象，一开始就是空的，然后附加到COM1设备的设备对象上。
+// 然后这个设备对象是我们弄的，然后随意构造他，用他来过滤设备的信息，就是一个中间层。
 NTSTATUS ccpAttachDevice(
     PDRIVER_OBJECT driver,
     PDEVICE_OBJECT oldobj,
@@ -73,6 +76,7 @@ NTSTATUS ccpAttachDevice(
     return STATUS_SUCCESS;
 }
 
+// 把每一个设备的设备对象都附加一下
 void ccpAttachAllComs(PDRIVER_OBJECT driver) {
     ULONG i;
     PDEVICE_OBJECT com_ob;
@@ -145,14 +149,36 @@ void ccpUnload(PDRIVER_OBJECT drv)
     }
 }
 
+// 
+// 入口点，跟main函数一样
 NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path){
     size_t i;
-    for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) {
+
+    // 循环处理所有 IRP_MJ_MAXIMUM_FUNCTION 类型的 IRP 请求
+        //IRP_MJ_CREATE: 用于处理文件或设备的创建请求。
+        //IRP_MJ_CLOSE : 处理文件或设备的关闭请求。
+        //IRP_MJ_READ : 处理从文件或设备读取数据的请求。
+        //IRP_MJ_WRITE : 处理向文件或设备写入数据的请求。
+        //IRP_MJ_DEVICE_CONTROL : 用于处理设备控制请求，通常由用户态应用程序通过 IOCTL 调用触发。
+        //IRP_MJ_INTERNAL_DEVICE_CONTROL : 用于内部设备控制请求，通常由驱动程序内部的组件触发。
+        //IRP_MJ_POWER : 处理电源管理请求，例如设备的启动、停止或休眠。
+        //IRP_MJ_SYSTEM_CONTROL : 处理系统控制请求，通常用于支持 WMI(Windows Management Instrumentation)。
+        //IRP_MJ_PNP : 处理即插即用(Plugand Play) 相关的请求，如设备的安装和卸载。
+    for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) { // IRP_MJ_MAXIMUM_FUNCTION就是为了把所有函数都赋值
+        // 打印调试信息
         DbgPrint("DriverEntry: %d\r\n", (int)i);
-        driver->MajorFunction[i] = ccpDispatch;
+
+        // 为每个 IRP 类型设置处理函数 ccpDispatch
+        driver->MajorFunction[i] = ccpDispatch; // 这里面的 i 对应 IRP_MJ_WRITE 这种宏定义。他的意思是，让每一个函数都变成 ccpDispatch，如果不赋值的话，本来也是没有函数的。
     }
+
+    // 设置驱动程序卸载函数为 ccpUnload
     driver->DriverUnload = ccpUnload;
+
+    // 调用 ccpAttachAllComs 函数来附加到所有串口通信端口
     ccpAttachAllComs(driver);
+
+    // 返回 STATUS_SUCCESS 表示驱动加载成功
     return STATUS_SUCCESS;
 
 }
