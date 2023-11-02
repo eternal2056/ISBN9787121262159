@@ -36,7 +36,7 @@ PDEVICE_OBJECT ccpOpenCom(ULONG id, NTSTATUS* status) {
     return devobj;   // 返回设备对象指针
 }
 
-// 这个函数：我们的驱动程序创建了一个设备对象，一开始就是空的，然后附加到COM1设备的设备对象上。
+// 这个函数：我们的驱动程序创建了一个设备对象，一开始就是空的，然后附加到COM1设备的设备对象上。 驱动对象创建的设备对象叫过滤设备对象，就是为了绑定真实设备对象用的。
 // 然后这个设备对象是我们弄的，然后随意构造他，用他来过滤设备的信息，就是一个中间层。
 NTSTATUS ccpAttachDevice(
     PDRIVER_OBJECT driver,
