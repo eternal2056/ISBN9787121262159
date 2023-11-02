@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.34114.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ISBN9787121262159_Driver", "ISBN9787121262159_Driver.vcxproj", "{46163450-FD57-4623-9AEF-B276551E407E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SerialPortFilteringDriver", "ISBN9787121262159_Driver.vcxproj", "{46163450-FD57-4623-9AEF-B276551E407E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KeyboardFilteringDriver", "..\KeyboardFilteringDriver\KeyboardFilteringDriver.vcxproj", "{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,30 @@ Global
 		{46163450-FD57-4623-9AEF-B276551E407E}.Release|x86.ActiveCfg = Release|Win32
 		{46163450-FD57-4623-9AEF-B276551E407E}.Release|x86.Build.0 = Release|Win32
 		{46163450-FD57-4623-9AEF-B276551E407E}.Release|x86.Deploy.0 = Release|Win32
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|ARM.ActiveCfg = Debug|ARM
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|ARM.Build.0 = Debug|ARM
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|ARM.Deploy.0 = Debug|ARM
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|ARM64.Build.0 = Debug|ARM64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|x64.ActiveCfg = Debug|x64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|x64.Build.0 = Debug|x64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|x64.Deploy.0 = Debug|x64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|x86.ActiveCfg = Debug|Win32
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|x86.Build.0 = Debug|Win32
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Debug|x86.Deploy.0 = Debug|Win32
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|ARM.ActiveCfg = Release|ARM
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|ARM.Build.0 = Release|ARM
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|ARM.Deploy.0 = Release|ARM
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|ARM64.ActiveCfg = Release|ARM64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|ARM64.Build.0 = Release|ARM64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|ARM64.Deploy.0 = Release|ARM64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|x64.ActiveCfg = Release|x64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|x64.Build.0 = Release|x64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|x64.Deploy.0 = Release|x64
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|x86.ActiveCfg = Release|Win32
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|x86.Build.0 = Release|Win32
+		{BD6B593F-3C24-4CD6-84FC-A63CCE4C9871}.Release|x86.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
