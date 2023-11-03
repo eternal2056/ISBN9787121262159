@@ -52,7 +52,7 @@ ObReferenceObjectByName(
     PVOID* Object
 );
 
-extern POBJECT_TYPE *IoDriverObjectType;
+extern POBJECT_TYPE *IoDriverObjectType; // https://blog.csdn.net/cssxn/article/details/103165667 这里好像就是得有*的
 ULONG gC2pKeyCount = 0;
 PDRIVER_OBJECT gDriverObject = NULL;
 
