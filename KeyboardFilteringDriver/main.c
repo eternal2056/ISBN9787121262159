@@ -148,7 +148,7 @@ c2pAttachDevices(
 		// 下面的操作和前面过滤串口的操作基本一致。这里不再解释了。
 		pFilterDeviceObject->DeviceType = pLowerDeviceObject->DeviceType;
 		pFilterDeviceObject->Characteristics = pLowerDeviceObject->Characteristics;
-		pFilterDeviceObject->StackSize = pLowerDeviceObject->StackSize + 1;
+		//pFilterDeviceObject->StackSize = pLowerDeviceObject->StackSize;
 		pFilterDeviceObject->Flags |= pLowerDeviceObject->Flags & (DO_BUFFERED_IO | DO_DIRECT_IO | DO_POWER_PAGABLE);
 		//next device 
 		pTargetDeviceObject = pTargetDeviceObject->NextDevice;
@@ -160,7 +160,7 @@ VOID
 c2pDetach(IN PDEVICE_OBJECT pDeviceObject)
 {
 	PC2P_DEV_EXT devExt;
-	//BOOLEAN NoRequestsOutstanding = FALSE;
+	BOOLEAN NoRequestsOutstanding = FALSE;
 	devExt = (PC2P_DEV_EXT)pDeviceObject->DeviceExtension;
 	__try
 	{
@@ -187,14 +187,14 @@ VOID
 c2pUnload(IN PDRIVER_OBJECT DriverObject)
 {
 	PDEVICE_OBJECT DeviceObject;
-	//PDEVICE_OBJECT OldDeviceObject;
-	//PC2P_DEV_EXT devExt;
+	PDEVICE_OBJECT OldDeviceObject;
+	PC2P_DEV_EXT devExt;
 
 	LARGE_INTEGER	lDelay;
 	PRKTHREAD CurrentThread;
 	//delay some time 
 	LONG value;
-	//LARGE_INTEGER li;
+	LARGE_INTEGER li;
 
 	value = 100 * DELAY_ONE_MILLISECOND; // 将你的数值赋给value
 	lDelay.QuadPart = value;
@@ -290,11 +290,12 @@ NTSTATUS c2pPnP(
 
 // 这是一个IRP完成回调函数的原型
 NTSTATUS c2pReadComplete(
-	//IN PDEVICE_OBJECT DeviceObject,
-	IN PIRP Irp
-	//IN PVOID Context
+	IN PDEVICE_OBJECT DeviceObject,
+	IN PIRP Irp,
+	IN PVOID Context
 )
 {
+	//DbgBreakPoint();
 	PIO_STACK_LOCATION IrpSp;
 	ULONG buf_len = 0;
 	PUCHAR buf = NULL;
@@ -333,6 +334,7 @@ NTSTATUS c2pDispatchRead(
 	IN PDEVICE_OBJECT DeviceObject,
 	IN PIRP Irp)
 {
+	//DbgBreakPoint();
 	NTSTATUS status = STATUS_SUCCESS;
 	PC2P_DEV_EXT devExt;
 	PIO_STACK_LOCATION currentIrpStack;
@@ -367,11 +369,11 @@ NTSTATUS c2pDispatchRead(
 }
 
 NTSTATUS DriverEntry(
-	IN PDRIVER_OBJECT DriverObject
-	//IN PUNICODE_STRING RegistryPath
+	IN PDRIVER_OBJECT DriverObject,
+	IN PUNICODE_STRING RegistryPath
 )
 {
-	DbgBreakPoint();
+	//DbgBreakPoint();
 	ULONG i;
 	NTSTATUS status;
 	KdPrint(("c2p.SYS: entering DriverEntry\n"));
