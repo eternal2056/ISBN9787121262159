@@ -78,6 +78,7 @@ c2pAttachDevices(
 	// 初始化一个字符串，就是Kdbclass驱动的名字。
 	RtlInitUnicodeString(&uniNtNameString, KBD_DRIVER_NAME);
 	// 请参照前面打开设备对象的例子。只是这里打开的是驱动对象。
+	// 2023年11月4日13:32:14 | 现在我觉得这就是打开一个别人的驱动，打开本有的键盘驱动，目的就是为了取出里面的设备对象的一些属性，用来创建专属于我们的驱动的设备对象。
 	status = ObReferenceObjectByName(
 		&uniNtNameString,
 		OBJ_CASE_INSENSITIVE,
@@ -97,6 +98,7 @@ c2pAttachDevices(
 	else
 	{
 		// 这个打开需要解应用。早点解除了免得之后忘记。
+		// 2023年11月4日13:34:18 | 个人认为，这玩意早点解除也不会碍后面的事儿，早点解除省的之后销毁出现问题。
 		ObDereferenceObject(KbdDriverObject);
 	}
 
@@ -107,6 +109,7 @@ c2pAttachDevices(
 	{
 		// 生成一个过滤设备，这是前面读者学习过的。这里的IN宏和OUT宏都是
 		// 空宏，只有标志性意义，表明这个参数是一个输入或者输出参数。
+		// 2023年11月4日13:35:48 | 用我们的驱动对象 + 键盘驱动对象的设备对象中的数据DeviceType和Characteristics 创建我们的设备对象。
 		status = IoCreateDevice(
 			IN DriverObject,
 			IN sizeof(C2P_DEV_EXT),
@@ -126,8 +129,8 @@ c2pAttachDevices(
 
 		// 绑定。pLowerDeviceObject是绑定之后得到的下一个设备。也就是
 		// 前面常常说的所谓真实设备。
-		pLowerDeviceObject =
-			IoAttachDeviceToDeviceStack(pFilterDeviceObject, pTargetDeviceObject);
+		// 2023年11月4日13:40:38 | 把设备对象插入到他们的设备对象栈中，然后到时候irp来的时候就可以经过我们的设备对象了。
+		pLowerDeviceObject = IoAttachDeviceToDeviceStack(pFilterDeviceObject, pTargetDeviceObject);
 		// 如果绑定失败了，放弃之前的操作，退出。
 		if (!pLowerDeviceObject)
 		{
@@ -141,11 +144,12 @@ c2pAttachDevices(
 		devExt = (PC2P_DEV_EXT)(pFilterDeviceObject->DeviceExtension);
 		c2pDevExtInit(
 			devExt,
-			pFilterDeviceObject,
-			pTargetDeviceObject,
-			pLowerDeviceObject);
+			pFilterDeviceObject, // 我们是谁
+			pTargetDeviceObject, // 告诉我们处于哪个设备对象栈中
+			pLowerDeviceObject); // 告诉我们下面的设备对象是谁
 
 		// 下面的操作和前面过滤串口的操作基本一致。这里不再解释了。
+		// 2023年11月4日13:45:09 | 为了要跟下面的设备对象一致，为了不出错吧？
 		pFilterDeviceObject->DeviceType = pLowerDeviceObject->DeviceType;
 		pFilterDeviceObject->Characteristics = pLowerDeviceObject->Characteristics;
 		//pFilterDeviceObject->StackSize = pLowerDeviceObject->StackSize;
@@ -231,8 +235,8 @@ NTSTATUS c2pDispatchGeneral(
 	// 其他的分发函数，直接skip然后用IoCallDriver把IRP发送到真实设备
 	// 的设备对象。 
 	KdPrint(("Other Diapatch!"));
-	IoSkipCurrentIrpStackLocation(Irp);
-	return IoCallDriver(((PC2P_DEV_EXT)
+	IoSkipCurrentIrpStackLocation(Irp); // 调整栈
+	return IoCallDriver(((PC2P_DEV_EXT) // 把irp发送到下一个设备对象
 		DeviceObject->DeviceExtension)->LowerDeviceObject, Irp);
 }
 
