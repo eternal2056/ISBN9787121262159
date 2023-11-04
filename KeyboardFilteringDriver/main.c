@@ -173,6 +173,7 @@ c2pDetach(IN PDEVICE_OBJECT pDeviceObject)
 	{
 		__try
 		{
+			// 2023年11月4日14:55:43 | 这个操作我看不懂，按道理TargetDeviceObject是本来有的啊
 			IoDetachDevice(devExt->TargetDeviceObject);
 			devExt->TargetDeviceObject = NULL;
 			IoDeleteDevice(pDeviceObject);
@@ -209,6 +210,7 @@ c2pUnload(IN PDRIVER_OBJECT DriverObject)
 	// 把当前线程设置为低实时模式，以便让它的运行尽量少影响其他程序。
 	KeSetPriorityThread(CurrentThread, LOW_REALTIME_PRIORITY);
 
+	// 2023年11月4日14:50:13 | 消除驱动代码中未使用的参数产生的编译警告。
 	UNREFERENCED_PARAMETER(DriverObject);
 	KdPrint(("DriverEntry unLoading...\n"));
 
@@ -218,6 +220,7 @@ c2pUnload(IN PDRIVER_OBJECT DriverObject)
 	{
 		// 解除绑定并删除所有的设备
 		c2pDetach(DeviceObject);
+		// 2023年11月4日14:51:28 | 驱动对象里的设备对象是一个单链表
 		DeviceObject = DeviceObject->NextDevice;
 	}
 	ASSERT(NULL == DriverObject->DeviceObject);
@@ -239,6 +242,7 @@ NTSTATUS c2pDispatchGeneral(
 	// 的设备对象。 
 	KdPrint(("Other Diapatch!"));
 	IoSkipCurrentIrpStackLocation(Irp); // 调整栈
+	// 2023年11月4日15:10:04 | 按道理LowerDeviceObject不是最后一个设备对象吗？
 	return IoCallDriver(((PC2P_DEV_EXT) // 把irp发送到下一个设备对象
 		DeviceObject->DeviceExtension)->LowerDeviceObject, Irp);
 }
