@@ -105,6 +105,7 @@ c2pAttachDevices(
 	// 这是设备链中的第一个设备	
 	pTargetDeviceObject = KbdDriverObject->DeviceObject;
 	// 现在开始遍历这个设备链
+	// 2023年11月4日13:56:08 | 可能是为了多个设备，或者挂了，但是没有挂到我们的键盘？
 	while (pTargetDeviceObject)
 	{
 		// 生成一个过滤设备，这是前面读者学习过的。这里的IN宏和OUT宏都是
@@ -130,6 +131,8 @@ c2pAttachDevices(
 		// 绑定。pLowerDeviceObject是绑定之后得到的下一个设备。也就是
 		// 前面常常说的所谓真实设备。
 		// 2023年11月4日13:40:38 | 把设备对象插入到他们的设备对象栈中，然后到时候irp来的时候就可以经过我们的设备对象了。
+		// 2023年11月4日13:55:29 | 返回的是最底层的设备，这是函数功能。
+		// 2023年11月4日13:57:49 | 附加后应该是 SourceDevice->TargetDevice->LowerDevice 这样的结构，本来是 TargetDevice->LowerDevice
 		pLowerDeviceObject = IoAttachDeviceToDeviceStack(pFilterDeviceObject, pTargetDeviceObject);
 		// 如果绑定失败了，放弃之前的操作，退出。
 		if (!pLowerDeviceObject)
