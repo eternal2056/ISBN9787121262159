@@ -74,7 +74,7 @@ Return Value:
     UNREFERENCED_PARAMETER(pRegistryPath);
 
     DEBUGP(DL_LOUD, ("DriverEntry\n"));
-
+    DbgBreakPoint();
     Globals.pDriverObject = pDriverObject;
     NPROT_INIT_EVENT(&Globals.BindsComplete);
 
@@ -97,7 +97,7 @@ Return Value:
             NULL,
             &deviceObject);
 
-#else     
+#else     */
         status = IoCreateDevice(pDriverObject,
             0,
             &ntDeviceName,
@@ -162,6 +162,7 @@ Return Value:
         // Register as a protocol driver
         //
 
+        // 好像win10不支持 ndis5了，所以没法注册
         NdisRegisterProtocol(
             (PNDIS_STATUS)&status,
             &Globals.NdisProtocolHandle,
